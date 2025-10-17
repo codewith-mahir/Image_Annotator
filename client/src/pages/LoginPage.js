@@ -22,10 +22,15 @@ const LoginPage = () => {
     setError(null);
 
     try {
+      console.log('Login attempt with:', form);
       const response = await apiClient.post('/auth/login', form);
+      console.log('Login successful:', response.data);
       setAuth(response.data.user, response.data.token);
       navigate('/app');
     } catch (submitError) {
+      console.error('Login error:', submitError);
+      console.error('Response status:', submitError.response?.status);
+      console.error('Response data:', submitError.response?.data);
       const message = submitError.response?.data?.message || 'Failed to login.';
       setError(message);
     } finally {

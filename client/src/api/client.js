@@ -22,6 +22,8 @@ const inferBaseUrl = () => {
 
 const API_BASE_URL = inferBaseUrl();
 
+console.log('API_BASE_URL:', API_BASE_URL);
+
 const apiClient = axios.create({
   baseURL: API_BASE_URL,
   withCredentials: false
@@ -34,6 +36,12 @@ apiClient.interceptors.request.use(
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
+
+    console.log('API Request:', {
+      method: config.method.toUpperCase(),
+      url: config.url,
+      fullUrl: `${API_BASE_URL}${config.url}`
+    });
 
     return config;
   },
