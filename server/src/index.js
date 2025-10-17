@@ -58,6 +58,18 @@ app.get('/health', (req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/media', mediaRoutes);
 
+// Fallback 404 handler for debugging
+app.use((req, res) => {
+  console.error(`❌ 404 Not Found: ${req.method} ${req.path}`);
+  console.error(`📋 Registered routes: /health, /api/auth/*, /api/media/*, /uploads`);
+  res.status(404).json({
+    error: 'Not Found',
+    path: req.path,
+    method: req.method,
+    registeredRoutes: ['/health', '/api/auth/*', '/api/media/*', '/uploads']
+  });
+});
+
 const startServer = async () => {
   try {
     await connectDatabase();
@@ -72,3 +84,14 @@ const startServer = async () => {
 };
 
 startServer();
+
+// Handle unhandled promise rejections
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('🚨 Unhandled Rejection:', reason);
+});
+
+// Handle uncaught exceptions
+process.on('uncaughtException', (error) => {
+  console.error('🚨 Uncaught Exception:', error);
+});
+
